@@ -1,7 +1,10 @@
+import 'package:arvo/service/database.dart';
+import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:bubbled_navigation_bar/bubbled_navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:provider/provider.dart';
 
 import 'completed/completed.dart';
 import 'events/event.dart';
@@ -14,6 +17,7 @@ import 'time/alarm.dart';
 import 'time/new_alarm.dart';
 
 class MyHomePage extends StatefulWidget {
+  //static final db = AppDatabase();
   final colors = [
     Colors.red,
     Colors.purple,
@@ -21,19 +25,7 @@ class MyHomePage extends StatefulWidget {
     Colors.teal,
     Colors.green
   ];
-  final screens = [
-    ProjectScreen(),
-    EventScreen(),
-    TaskScreen(),
-    AlarmScreen(),
-    CompletedScreen(),
-  ];
-  final dialogs = [
-    NewProjectDialog(),
-    NewEventDialog(),
-    NewTaskDialog(),
-    NewAlarmDialog()
-  ];
+
   final titles = ['Main', 'Events', 'Tasks', 'Time', 'Completed'];
   final icons = [
     CupertinoIcons.home,
@@ -50,10 +42,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _page = 0;
+  int _page;
+  var _dialogs;
   PageController _pageController;
   MenuPositionController _menuPositionController;
   bool userPageDragging = false;
+  // AppDatabase db;
+  // EventDao eventDao;
+  // TaskDao taskDao;
 
   @override
   void initState() {
@@ -62,79 +58,53 @@ class _MyHomePageState extends State<MyHomePage> {
         PageController(initialPage: 0, keepPage: false, viewportFraction: 1.0);
     _pageController.addListener(handlePageChange);
     super.initState();
+    // db = AppDatabase();
+    // eventDao = EventDao(db);
+    // taskDao = TaskDao(db);
+    _page = 0;
   }
 
   void handlePageChange() {
     _menuPositionController.absolutePosition = _pageController.page;
   }
 
-  bool checkUserDragging(ScrollNotification scrollNotification) {
-    if (scrollNotification is UserScrollNotification &&
-        scrollNotification.direction != ScrollDirection.idle) {
-       userPageDragging = true;
-    } else if (scrollNotification is ScrollEndNotification) {
-       userPageDragging = false;
-    }
-    if (userPageDragging) {
-       _menuPositionController.findNearestTarget(_pageController.page);
-    }
-    return userPageDragging;
-  }
-
   @override
   Widget build(BuildContext context) {
-    //var colorIndex = widget.titles.indexOf(_page)
+    final db = Provider.of<AppDatabase>(context);
+    //print("Page value is $_page ");
+    _dialogs = [
+      NewProjectDialog(),
+      StreamProvider.value(
+        child: NewEventDialog(),
+        value: db.tagDao.watchTags(),
+      ),
+      NewTaskDialog(),
+      NewAlarmDialog()
+    ];
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text('Bubbled Navigation Bar'),
-      // ),
       backgroundColor: widget.colors[_page],
-      body: NotificationListener<ScrollNotification>(
-        onNotification: (scrollNotification) {
-           return checkUserDragging(scrollNotification);
-        },
+      body: SizedBox.expand(
         child: PageView(
           controller: _pageController,
-          children: widget.screens
-              .map((Widget s) => Container(child: s)) //
-              .toList(),
-          onPageChanged: (page) {
-            setState(() {
-              _page = page;
-            });
-            //print("The page index in page view is $_page");
+          onPageChanged: (index) {
+            setState(() => _page = index);
           },
+          children: <Widget>[
+            ProjectScreen(),
+            StreamProvider.value(
+              child: EventScreen(),
+              value: db.eventDao.watchUnCompletedEvents(),
+            ),
+            StreamProvider.value(
+              child: TaskScreen(),
+              value: db.taskDao.watchUnCompletedTasks(),
+            ),
+            AlarmScreen(),
+            CompletedScreen(),
+          ],
         ),
       ),
-      bottomNavigationBar: BubbledNavigationBar(
-        controller: _menuPositionController,
-        initialIndex: _page,
-        itemMargin: EdgeInsets.symmetric(horizontal: 8),
-        backgroundColor: Colors.black,
-        defaultBubbleColor: Colors.blue,
-        onTap: (index) {
-          _pageController.animateToPage(index,
-              curve: Curves.elasticInOut,
-              duration: Duration(milliseconds: 500));
-          setState(() {
-            _page = index;
-          });
-          //print("The page index in bubled navigation bar is $_page");
-        },
-        items: widget.titles.map((title) {
-          var index = widget.titles.indexOf(title);
-          var color = widget.colors[index];
-          return BubbledNavigationBarItem(
-            icon: getIcon(index, color),
-            activeIcon: getIcon(index, Colors.white),
-            bubbleColor: color,
-            title: Text(
-              title,
-              style: TextStyle(color: Colors.white, fontSize: 12),
-            ),
-          );
-        }).toList(),
-      ),
+      bottomNavigationBar: _buildBottomNavigationBar(),
       floatingActionButton: (_page < 4)
           ? FloatingActionButton(
               onPressed: () {
@@ -151,7 +121,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         barrierDismissible: false,
                         builder: (context) => Dialog(
                           backgroundColor: Colors.white,
-                          child: widget.dialogs[_page],
+                          child: _dialogs[_page],
                           elevation: 20,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -163,6 +133,99 @@ class _MyHomePageState extends State<MyHomePage> {
             )
           : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+    );
+  }
+
+  BottomNavyBar _buildBottomNavigationBar() {
+    return BottomNavyBar(
+      backgroundColor: Colors.black,
+      selectedIndex: _page,
+      items: <BottomNavyBarItem>[
+        BottomNavyBarItem(
+          textAlign: TextAlign.center,
+          activeColor: widget.colors.elementAt(0),
+          icon: Icon(
+            CupertinoIcons.home,
+          ),
+          title: Text(
+            "Home",
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w800,
+              fontStyle: FontStyle.italic,
+              fontSize: 16,
+            ),
+          ),
+        ),
+        BottomNavyBarItem(
+          textAlign: TextAlign.center,
+          activeColor: widget.colors.elementAt(1),
+          icon: Icon(
+            Icons.date_range,
+          ),
+          title: Text(
+            "Events",
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w800,
+              fontStyle: FontStyle.italic,
+              fontSize: 16,
+            ),
+          ),
+        ),
+        BottomNavyBarItem(
+          textAlign: TextAlign.center,
+          activeColor: widget.colors.elementAt(2),
+          icon: Icon(
+            CupertinoIcons.news,
+          ),
+          title: Text(
+            "Tasks",
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w800,
+              fontStyle: FontStyle.italic,
+              fontSize: 16,
+            ),
+          ),
+        ),
+        BottomNavyBarItem(
+          textAlign: TextAlign.center,
+          activeColor: widget.colors.elementAt(3),
+          icon: Icon(
+            CupertinoIcons.clock,
+          ),
+          title: Text(
+            "Time",
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w800,
+              fontStyle: FontStyle.italic,
+              fontSize: 16,
+            ),
+          ),
+        ),
+        BottomNavyBarItem(
+          textAlign: TextAlign.center,
+          activeColor: widget.colors.elementAt(4),
+          icon: Icon(
+            CupertinoIcons.check_mark_circled,
+          ),
+          title: Text(
+            "Completed",
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w800,
+              fontStyle: FontStyle.italic,
+              fontSize: 16,
+            ),
+          ),
+        )
+      ],
+      onItemSelected: (index) {
+        setState(() => _page = index);
+        _pageController.jumpToPage(index);
+      },
     );
   }
 

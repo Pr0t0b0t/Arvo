@@ -30,7 +30,7 @@ class _AlarmScreenState extends State<AlarmScreen> {
               pinned: true,
               flexibleSpace: FlexibleSpaceBar(
                 title: Text(
-                  "Ring in hh hours mm min..!!",
+                  "Githubed repo in hh hours mm min..!!",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       color: Colors.white,

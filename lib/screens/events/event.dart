@@ -1,6 +1,9 @@
+import 'package:arvo/service/database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 final Map<DateTime, List> _holidays = {
@@ -30,124 +33,165 @@ class _EventScreenState extends State<EventScreen> {
     //_animationController.forward();
   }
 
+//<>
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Container(
-        color: Colors.purple,
-        child: CustomScrollView(
-          slivers: <Widget>[
-            SliverAppBar(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                  bottomRight: Radius.circular(35),
-                  bottomLeft: Radius.circular(35),
+    final evDao = Provider.of<EventDao>(context);
+    return StreamProvider.value(
+      child: SafeArea(
+        child: Container(
+          color: Colors.purple,
+          child: CustomScrollView(
+            slivers: <Widget>[
+              SliverAppBar(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    bottomRight: Radius.circular(35),
+                    bottomLeft: Radius.circular(35),
+                  ),
+                ),
+                elevation: 20,
+                expandedHeight: 450.0,
+                floating: false,
+                pinned: true,
+                flexibleSpace: FlexibleSpaceBar(
+                  title: Text(
+                    "Calendar",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontStyle: FontStyle.italic,
+                        fontWeight: FontWeight.w900,
+                        fontSize: 20),
+                  ),
+                  titlePadding: EdgeInsets.fromLTRB(10, 10, 10, 18),
+                  collapseMode: CollapseMode.parallax,
+                  centerTitle: true,
+                  background: _buildTableCalendar(),
                 ),
               ),
-              elevation: 20,
-              expandedHeight: 450.0,
-              floating: false,
-              pinned: true,
-              flexibleSpace: FlexibleSpaceBar(
-                title: Text(
-                  "Calendar",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontStyle: FontStyle.italic,
-                      fontWeight: FontWeight.w900,
-                      fontSize: 20),
+              Consumer<List<EventWithTag>>(
+                builder: (BuildContext context, List value, Widget child) {
+                  final events = value ?? List();
+                  return (events.isEmpty)
+                      ? _emptyEventSliverBuilder()
+                      : _buildEventSliverList(events, evDao);
+                },
+              )
+            ],
+          ),
+        ),
+      ),
+      value: evDao.watchUnCompletedEvents(),
+      catchError: (_, __) => null,
+    );
+  }
+
+  SliverList _buildEventSliverList(List events, EventDao evDao) {
+    return SliverList(
+      delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
+        final ev = events[index];
+        return Column(
+          children: <Widget>[
+            SizedBox(height: 15),
+            InkWell(
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    bottomRight: Radius.circular(25),
+                    //bottomLeft: Radius.circular(25),
+                  ),
                 ),
-                titlePadding: EdgeInsets.fromLTRB(10, 10, 10, 18),
-                collapseMode: CollapseMode.parallax,
-                centerTitle: true,
-                background: _buildTableCalendar(),
-              ),
-            ),
-            SliverList(
-              delegate: SliverChildBuilderDelegate(
-                  (BuildContext context, int index) => Column(
-                        children: <Widget>[
-                          SizedBox(height: 15),
-                          InkWell(
-                            child: Card(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  bottomRight: Radius.circular(25),
-                                  //bottomLeft: Radius.circular(25),
-                                ),
-                              ),
-                              //margin: EdgeInsets.only(left: 20, right: 20),
-                              margin: EdgeInsets.all(8),
-                              elevation: 15,
-                              child: Slidable(
-                                child: Row(
-                                  children: <Widget>[
-                                    SizedBox(width:5),
-                                    Container(
-                                      height: 50,
-                                      width: 15,
-                                      decoration: BoxDecoration(
-                                        color: Colors.amber,
-                                        borderRadius: BorderRadius.only(
-                                          //topRight: Radius.circular(25),
-                                          bottomRight: Radius.circular(25),
-                                        ),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: CheckboxListTile(
-                                        activeColor: Colors.transparent,
-                                        checkColor: Colors.green,
-                                        title: Text("Event's $index title"),
-                                        subtitle: Text("Event's description"),
-                                        secondary: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: <Widget>[
-                                            // // Container(
-                                            // //   width: 5,
-                                            // //   color: Colors.deepOrange,
-                                            // // ),
-                                            // SizedBox(
-                                            //   width: 5,
-                                            // ),
-                                            Column(
-                                              children: <Widget>[
-                                                SizedBox(height: 12),
-                                                Text("Categorie"),
-                                                SizedBox(height: 5),
-                                                Text("Time")
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                        selected: false,
-                                        value: isChecked,
-                                        onChanged: (value) {
-                                          setState(() {
-                                            isChecked = true;
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                actionPane: SlidableDrawerActionPane(),
-                                secondaryActions: <Widget>[
-                                  IconSlideAction(
-                                    color: Colors.red,
-                                    caption: "Delete",
-                                    icon: CupertinoIcons.delete_solid,
-                                    onTap: () {},
-                                  ),
+                //margin: EdgeInsets.only(left: 20, right: 20),
+                margin: EdgeInsets.all(8),
+                elevation: 15,
+                child: Slidable(
+                  child: Row(
+                    children: <Widget>[
+                      SizedBox(width: 5),
+                      Container(
+                        height: 50,
+                        width: 15,
+                        decoration: BoxDecoration(
+                          color: Color(ev.tag.color),
+                          borderRadius: BorderRadius.only(
+                            //topRight: Radius.circular(25),
+                            bottomRight: Radius.circular(25),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: CheckboxListTile(
+                          activeColor: Colors.transparent,
+                          checkColor: Colors.green,
+                          title: Text(ev.event.evName),
+                          subtitle: Text(ev.event.description),
+                          secondary: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              Column(
+                                children: <Widget>[
+                                  SizedBox(height: 12),
+                                  Text(DateFormat.Hm()
+                                      .format(ev.event.startDate)),
+                                  SizedBox(height: 5),
+                                  Text(DateFormat("dd MM yyyy")
+                                      .format(ev.event.endDate))
                                 ],
                               ),
-                            ),
+                            ],
                           ),
-                        ],
+                          //selected: false,
+                          value: ev.event.isHappened,
+                          onChanged: (value) => evDao.updateEvent(
+                              ev.event.copyWith(isHappened: value)),
+                        ),
                       ),
-                  childCount: 50),
-            )
+                    ],
+                  ),
+                  actionPane: SlidableDrawerActionPane(),
+                  secondaryActions: <Widget>[
+                    IconSlideAction(
+                      color: Colors.red,
+                      caption: "Delete",
+                      icon: CupertinoIcons.delete_solid,
+                      onTap: () => evDao.deleteEvent(ev.event),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ],
+        );
+      }, childCount: events.length),
+    );
+  }
+
+  SliverFillRemaining _emptyEventSliverBuilder() {
+    return SliverFillRemaining(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(10.0, 55, 10, 5),
+        child: Center(
+          child: Column(
+            children: <Widget>[
+              Text(
+                "There is no event scheduled for now",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 19,
+                    fontWeight: FontWeight.w900,
+                    fontStyle: FontStyle.italic),
+              ),
+              SizedBox(height: 12),
+              Text(
+                "Slide to left on an event's tile to delete..!!",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 19,
+                    fontWeight: FontWeight.w900,
+                    fontStyle: FontStyle.italic),
+              ),
+            ],
+          ),
         ),
       ),
     );

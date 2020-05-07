@@ -19,6 +19,8 @@ class _ProjectScreenState extends State<ProjectScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
         color: Colors.red[300],
         child: Column(
           children: <Widget>[
@@ -286,10 +288,11 @@ class _ProjectScreenState extends State<ProjectScreen> {
                       itemCount: 20)
                   : Padding(
                       padding: const EdgeInsets.only(top: 100.0),
-                      child: Column(
+                      child: ListView(
                         children: <Widget>[
                           Text(
                             "1-One Tap on a project tile to display his details..!!",
+                            textAlign: TextAlign.center,
                             style: TextStyle(
                                 fontSize: 19,
                                 fontWeight: FontWeight.w900,
@@ -298,6 +301,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
                           SizedBox(height: 12),
                           Text(
                             "2-Double Tap on a project tile to hide them..!!",
+                            textAlign: TextAlign.center,
                             style: TextStyle(
                                 fontSize: 19,
                                 fontWeight: FontWeight.w900,
@@ -306,6 +310,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
                           SizedBox(height: 12),
                           Text(
                             "3-Long Press on a project tile to delete..!!",
+                            textAlign: TextAlign.center,
                             style: TextStyle(
                                 fontSize: 19,
                                 fontWeight: FontWeight.w900,
@@ -314,6 +319,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
                           SizedBox(height: 12),
                           Text(
                             "4-Slide to left on a task tile to delete..!!",
+                            textAlign: TextAlign.center,
                             style: TextStyle(
                                 fontSize: 19,
                                 fontWeight: FontWeight.w900,
@@ -329,4 +335,3 @@ class _ProjectScreenState extends State<ProjectScreen> {
     );
   }
 }
-

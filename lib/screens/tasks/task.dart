@@ -1,4 +1,7 @@
+import 'package:arvo/service/database.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class TaskScreen extends StatefulWidget {
   @override
@@ -8,7 +11,8 @@ class TaskScreen extends StatefulWidget {
 class _TaskScreenState extends State<TaskScreen> {
   @override
   Widget build(BuildContext context) {
-    bool isDone = false;
+    
+    final db = Provider.of<AppDatabase>(context);
     return SafeArea(
       child: Container(
         child: Column(
@@ -24,51 +28,94 @@ class _TaskScreenState extends State<TaskScreen> {
                     color: Colors.white),
               ),
             ),
-            Expanded(
-              child: ListView.separated(
-                  itemBuilder: (context, index) => Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(50),
-                          ),
-                        ),
-                        child: Row(
-                          children: <Widget>[
-                            SizedBox(
-                              width: 30,
-                            ),
-                            Container(
-                              height: 72,
-                              width: 15,
-                              decoration: BoxDecoration(
-                                color: Colors.deepPurple,
-                                // borderRadius: BorderRadius.only(
-                                //   topLeft: Radius.circular(8),
-                                //   bottomLeft: Radius.circular(8)
-                                // ),
-                              ),
-                            ),
-                            Expanded(
-                              child: RadioListTile(
-                                value: isDone,
-                                groupValue: null,
-                                onChanged: null,
-                                title: Text("Title"),
-                                subtitle: Text("Subtitle"),
-                                selected: true,
-                                secondary: Text("data"),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                  separatorBuilder: (context, index) => SizedBox(
-                        height: 15,
-                      ),
-                  itemCount: 50),
+            Consumer<List<TaskWithTag>>(
+              builder: (BuildContext context, value, Widget child) {
+                final tasks = value ?? List();
+                return (tasks.isEmpty)
+                    ? _buildCenterEmptyTaskMethod()
+                    : Expanded(
+                        child: ListView.separated(
+                            itemBuilder: (context, index) {
+                              final task = tasks[index];
+                              return Card(
+                                elevation: 10,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(50),
+                                  ),
+                                ),
+                                child: Row(
+                                  children: <Widget>[
+                                    SizedBox(
+                                      width: 30,
+                                    ),
+                                    Container(
+                                      height: 52,
+                                      width: 15,
+                                      decoration: BoxDecoration(
+                                        color: Color(task.tag.color),
+                                        // borderRadius: BorderRadius.only(
+                                        //   topLeft: Radius.circular(8),
+                                        //   bottomLeft: Radius.circular(8)
+                                        // ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: RadioListTile(
+                                        value: task.task.isCompleted,
+                                        groupValue: null,
+                                        onChanged: (value) =>
+                                            db.taskDao.updateTask(
+                                          task.task
+                                              .copyWith(isCompleted: value),
+                                        ),
+                                        title: Text(task.task.name),
+                                        subtitle: Text(task.tag.name),
+                                        selected: true,
+                                        secondary: Column(
+                                          children: <Widget>[
+                                            Text(
+                                              DateFormat.Hms()
+                                                  .format(task.task.dueDate),
+                                            ),
+                                            Text(
+                                              DateFormat("dd MM yyyy")
+                                                  .format(task.task.dueDate),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                            separatorBuilder: (context, index) => SizedBox(
+                                  height: 15,
+                                ),
+                            itemCount: 50),
+                      );
+              },
             )
           ],
         ),
+      ),
+    );
+  }
+
+  Center _buildCenterEmptyTaskMethod() {
+    return Center(
+      child: Column(
+        children: <Widget>[
+          Text(
+            "There is no scheduled task for now",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                fontSize: 19,
+                fontWeight: FontWeight.w900,
+                fontStyle: FontStyle.italic),
+          ),
+        ],
       ),
     );
   }
