@@ -39,6 +39,7 @@ class MyApp extends StatelessWidget {
         home: MyHomePage(),
       ),
       providers: [
+        Provider(create: (_) => _database.alarmDao),
         Provider(create: (_) => _database.eventDao),
         Provider(create: (_) => _database.projectDao),
         Provider(create: (_) => _database.subTaskDao),

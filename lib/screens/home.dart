@@ -20,8 +20,8 @@ class MyHomePage extends StatefulWidget {
   //static final db = AppDatabase();
   final colors = [
     Colors.red,
-    Colors.purple,
-    Colors.cyan,
+    Colors.purpleAccent,
+    Colors.grey,
     Colors.teal,
     Colors.green
   ];
@@ -78,7 +78,10 @@ class _MyHomePageState extends State<MyHomePage> {
         child: NewEventDialog(),
         value: db.tagDao.watchTags(),
       ),
-      NewTaskDialog(),
+      StreamProvider.value(
+        child: NewTaskDialog(),
+        value: db.tagDao.watchTags(),
+      ),
       NewAlarmDialog()
     ];
     return Scaffold(
@@ -116,18 +119,26 @@ class _MyHomePageState extends State<MyHomePage> {
                           builder: (context) => NewProjectDialog(),
                         ),
                       )
-                    : showDialog(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (context) => Dialog(
-                          backgroundColor: Colors.white,
-                          child: _dialogs[_page],
-                          elevation: 20,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                          ),
-                        ),
-                      );
+                    : (_page == 3)
+                        ? Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => NewAlarmDialog(),
+                            ),
+                          )
+                        : showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (context) => Dialog(
+                              backgroundColor: Colors.white,
+                              child: _dialogs[_page],
+                              elevation: 20,
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(20)),
+                              ),
+                            ),
+                          );
               },
               child: Icon(CupertinoIcons.add_circled_solid),
             )

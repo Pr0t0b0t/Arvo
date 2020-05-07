@@ -325,6 +325,16 @@ class _ProjectScreenState extends State<ProjectScreen> {
                                 fontWeight: FontWeight.w900,
                                 fontStyle: FontStyle.italic),
                           ),
+                          SizedBox(height: 15),
+                          Text(
+                            "COMING SOON IN NEXT RELEASE :) ..!!",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.deepPurple,
+                                fontWeight: FontWeight.w900,
+                                fontStyle: FontStyle.italic),
+                          ),
                         ],
                       ),
                     ),

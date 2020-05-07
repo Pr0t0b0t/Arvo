@@ -7,6 +7,199 @@ part of 'database.dart';
 // **************************************************************************
 
 // ignore_for_file: unnecessary_brace_in_string_interps, unnecessary_this
+class Alarm extends DataClass implements Insertable<Alarm> {
+  final bool hasRang;
+  final DateTime ringTime;
+  final int id;
+  Alarm({@required this.hasRang, @required this.ringTime, @required this.id});
+  factory Alarm.fromData(Map<String, dynamic> data, GeneratedDatabase db,
+      {String prefix}) {
+    final effectivePrefix = prefix ?? '';
+    final boolType = db.typeSystem.forDartType<bool>();
+    final dateTimeType = db.typeSystem.forDartType<DateTime>();
+    final intType = db.typeSystem.forDartType<int>();
+    return Alarm(
+      hasRang:
+          boolType.mapFromDatabaseResponse(data['${effectivePrefix}has_rang']),
+      ringTime: dateTimeType
+          .mapFromDatabaseResponse(data['${effectivePrefix}ring_time']),
+      id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
+    );
+  }
+  factory Alarm.fromJson(Map<String, dynamic> json,
+      {ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return Alarm(
+      hasRang: serializer.fromJson<bool>(json['hasRang']),
+      ringTime: serializer.fromJson<DateTime>(json['ringTime']),
+      id: serializer.fromJson<int>(json['id']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'hasRang': serializer.toJson<bool>(hasRang),
+      'ringTime': serializer.toJson<DateTime>(ringTime),
+      'id': serializer.toJson<int>(id),
+    };
+  }
+
+  @override
+  AlarmsCompanion createCompanion(bool nullToAbsent) {
+    return AlarmsCompanion(
+      hasRang: hasRang == null && nullToAbsent
+          ? const Value.absent()
+          : Value(hasRang),
+      ringTime: ringTime == null && nullToAbsent
+          ? const Value.absent()
+          : Value(ringTime),
+      id: id == null && nullToAbsent ? const Value.absent() : Value(id),
+    );
+  }
+
+  Alarm copyWith({bool hasRang, DateTime ringTime, int id}) => Alarm(
+        hasRang: hasRang ?? this.hasRang,
+        ringTime: ringTime ?? this.ringTime,
+        id: id ?? this.id,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('Alarm(')
+          ..write('hasRang: $hasRang, ')
+          ..write('ringTime: $ringTime, ')
+          ..write('id: $id')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      $mrjf($mrjc(hasRang.hashCode, $mrjc(ringTime.hashCode, id.hashCode)));
+  @override
+  bool operator ==(dynamic other) =>
+      identical(this, other) ||
+      (other is Alarm &&
+          other.hasRang == this.hasRang &&
+          other.ringTime == this.ringTime &&
+          other.id == this.id);
+}
+
+class AlarmsCompanion extends UpdateCompanion<Alarm> {
+  final Value<bool> hasRang;
+  final Value<DateTime> ringTime;
+  final Value<int> id;
+  const AlarmsCompanion({
+    this.hasRang = const Value.absent(),
+    this.ringTime = const Value.absent(),
+    this.id = const Value.absent(),
+  });
+  AlarmsCompanion.insert({
+    this.hasRang = const Value.absent(),
+    @required DateTime ringTime,
+    this.id = const Value.absent(),
+  }) : ringTime = Value(ringTime);
+  AlarmsCompanion copyWith(
+      {Value<bool> hasRang, Value<DateTime> ringTime, Value<int> id}) {
+    return AlarmsCompanion(
+      hasRang: hasRang ?? this.hasRang,
+      ringTime: ringTime ?? this.ringTime,
+      id: id ?? this.id,
+    );
+  }
+}
+
+class $AlarmsTable extends Alarms with TableInfo<$AlarmsTable, Alarm> {
+  final GeneratedDatabase _db;
+  final String _alias;
+  $AlarmsTable(this._db, [this._alias]);
+  final VerificationMeta _hasRangMeta = const VerificationMeta('hasRang');
+  GeneratedBoolColumn _hasRang;
+  @override
+  GeneratedBoolColumn get hasRang => _hasRang ??= _constructHasRang();
+  GeneratedBoolColumn _constructHasRang() {
+    return GeneratedBoolColumn('has_rang', $tableName, false,
+        defaultValue: Constant(false));
+  }
+
+  final VerificationMeta _ringTimeMeta = const VerificationMeta('ringTime');
+  GeneratedDateTimeColumn _ringTime;
+  @override
+  GeneratedDateTimeColumn get ringTime => _ringTime ??= _constructRingTime();
+  GeneratedDateTimeColumn _constructRingTime() {
+    return GeneratedDateTimeColumn(
+      'ring_time',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _idMeta = const VerificationMeta('id');
+  GeneratedIntColumn _id;
+  @override
+  GeneratedIntColumn get id => _id ??= _constructId();
+  GeneratedIntColumn _constructId() {
+    return GeneratedIntColumn('id', $tableName, false,
+        hasAutoIncrement: true, declaredAsPrimaryKey: true);
+  }
+
+  @override
+  List<GeneratedColumn> get $columns => [hasRang, ringTime, id];
+  @override
+  $AlarmsTable get asDslTable => this;
+  @override
+  String get $tableName => _alias ?? 'alarms';
+  @override
+  final String actualTableName = 'alarms';
+  @override
+  VerificationContext validateIntegrity(AlarmsCompanion d,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    if (d.hasRang.present) {
+      context.handle(_hasRangMeta,
+          hasRang.isAcceptableValue(d.hasRang.value, _hasRangMeta));
+    }
+    if (d.ringTime.present) {
+      context.handle(_ringTimeMeta,
+          ringTime.isAcceptableValue(d.ringTime.value, _ringTimeMeta));
+    } else if (isInserting) {
+      context.missing(_ringTimeMeta);
+    }
+    if (d.id.present) {
+      context.handle(_idMeta, id.isAcceptableValue(d.id.value, _idMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Alarm map(Map<String, dynamic> data, {String tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
+    return Alarm.fromData(data, _db, prefix: effectivePrefix);
+  }
+
+  @override
+  Map<String, Variable> entityToSql(AlarmsCompanion d) {
+    final map = <String, Variable>{};
+    if (d.hasRang.present) {
+      map['has_rang'] = Variable<bool, BoolType>(d.hasRang.value);
+    }
+    if (d.ringTime.present) {
+      map['ring_time'] = Variable<DateTime, DateTimeType>(d.ringTime.value);
+    }
+    if (d.id.present) {
+      map['id'] = Variable<int, IntType>(d.id.value);
+    }
+    return map;
+  }
+
+  @override
+  $AlarmsTable createAlias(String alias) {
+    return $AlarmsTable(_db, alias);
+  }
+}
+
 class Task extends DataClass implements Insertable<Task> {
   final int id;
   final int tag;
@@ -1514,6 +1707,8 @@ class $SubTasksTable extends SubTasks with TableInfo<$SubTasksTable, SubTask> {
 
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(SqlTypeSystem.defaultInstance, e);
+  $AlarmsTable _alarms;
+  $AlarmsTable get alarms => _alarms ??= $AlarmsTable(this);
   $TasksTable _tasks;
   $TasksTable get tasks => _tasks ??= $TasksTable(this);
   $EventsTable _events;
@@ -1524,6 +1719,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   $ProjectsTable get projects => _projects ??= $ProjectsTable(this);
   $SubTasksTable _subTasks;
   $SubTasksTable get subTasks => _subTasks ??= $SubTasksTable(this);
+  AlarmDao _alarmDao;
+  AlarmDao get alarmDao => _alarmDao ??= AlarmDao(this as AppDatabase);
   TaskDao _taskDao;
   TaskDao get taskDao => _taskDao ??= TaskDao(this as AppDatabase);
   EventDao _eventDao;
@@ -1538,29 +1735,32 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [tasks, events, tags, projects, subTasks];
+      [alarms, tasks, events, tags, projects, subTasks];
 }
 
 // **************************************************************************
 // DaoGenerator
 // **************************************************************************
 
-mixin _$ProjectDaoMixin on DatabaseAccessor<AppDatabase> {
-  $ProjectsTable get projects => db.projects;
-  $SubTasksTable get subTasks => db.subTasks;
-  $TagsTable get tags => db.tags;
-}
-mixin _$TaskDaoMixin on DatabaseAccessor<AppDatabase> {
-  $TasksTable get tasks => db.tasks;
-  $TagsTable get tags => db.tags;
+mixin _$AlarmDaoMixin on DatabaseAccessor<AppDatabase> {
+  $AlarmsTable get alarms => db.alarms;
 }
 mixin _$EventDaoMixin on DatabaseAccessor<AppDatabase> {
   $EventsTable get events => db.events;
   $TagsTable get tags => db.tags;
 }
-mixin _$TagDaoMixin on DatabaseAccessor<AppDatabase> {
+mixin _$ProjectDaoMixin on DatabaseAccessor<AppDatabase> {
+  $ProjectsTable get projects => db.projects;
+  $SubTasksTable get subTasks => db.subTasks;
   $TagsTable get tags => db.tags;
 }
 mixin _$SubTaskDaoMixin on DatabaseAccessor<AppDatabase> {
   $SubTasksTable get subTasks => db.subTasks;
+}
+mixin _$TagDaoMixin on DatabaseAccessor<AppDatabase> {
+  $TagsTable get tags => db.tags;
+}
+mixin _$TaskDaoMixin on DatabaseAccessor<AppDatabase> {
+  $TasksTable get tasks => db.tasks;
+  $TagsTable get tags => db.tags;
 }

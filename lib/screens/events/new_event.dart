@@ -389,8 +389,6 @@ class _NewEventDialogState extends State<NewEventDialog> {
     setState(() {
       _nameController.clear();
       _descriptionController.clear();
-      // _nameController.dispose();
-      // _descriptionController.dispose();
     });
     print("Tag id is ${_choosedTag.id}");
     Navigator.of(context).pop();

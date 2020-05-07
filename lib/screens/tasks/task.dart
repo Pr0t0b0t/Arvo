@@ -9,9 +9,17 @@ class TaskScreen extends StatefulWidget {
 }
 
 class _TaskScreenState extends State<TaskScreen> {
+  TimeOfDay timeOfDay ;
+  
   @override
   Widget build(BuildContext context) {
+    // timeOfDay = TimeOfDay.fromDateTime(DateTime.now());
+    // String res = timeOfDay.format(context);
+    // bool is12HoursFormat = res.contains(new RegExp(r'[A-Z]'));
+    // print(is12HoursFormat);
     
+    bool is24HoursFormat = MediaQuery.of(context).alwaysUse24HourFormat;
+    print("24hours format is $is24HoursFormat");
     final db = Provider.of<AppDatabase>(context);
     return SafeArea(
       child: Container(
@@ -37,63 +45,84 @@ class _TaskScreenState extends State<TaskScreen> {
                         child: ListView.separated(
                             itemBuilder: (context, index) {
                               final task = tasks[index];
-                              return Card(
-                                elevation: 10,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(50),
+                              return Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(18.0, 12, 18, 0),
+                                child: Card(
+                                  elevation: 20,
+                                  child: Row(
+                                    children: <Widget>[
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Container(
+                                        height: 52,
+                                        width: 15,
+                                        decoration: BoxDecoration(
+                                          color: Color(task.tag.color),
+                                          borderRadius: BorderRadius.only(
+                                              topRight: Radius.circular(8),
+                                              bottomLeft: Radius.circular(8)),
+                                        ),
+                                      ),
+                                      Flexible(
+                                        flex: 2,
+                                        fit: FlexFit.tight,
+                                        child: RadioListTile(
+                                          value: task.task.isCompleted,
+                                          groupValue: null,
+                                          onChanged: (value) =>
+                                              db.taskDao.updateTask(
+                                            task.task
+                                                .copyWith(isCompleted: value),
+                                          ),
+                                          title: Text(
+                                            task.task.name,
+                                            style: TextStyle(
+                                                //fontSize: 18,
+                                                fontWeight: FontWeight.w900,
+                                                fontStyle: FontStyle.italic),
+                                          ),
+                                          subtitle: Text(task.tag.name),
+                                          selected: true,
+                                          secondary: Column(
+                                            children: <Widget>[
+                                              SizedBox(
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.015,
+                                              ),
+                                              (is24HoursFormat)?Text(
+                                                DateFormat.Hm()
+                                                    .format(task.task.dueDate),
+                                              ):Text(
+                                                DateFormat.jm()
+                                                    .format(task.task.dueDate),
+                                              ),
+                                              SizedBox(
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.005,
+                                              ),
+                                              Text(
+                                                DateFormat("EEEE dd MM")
+                                                    .format(task.task.dueDate),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                                child: Row(
-                                  children: <Widget>[
-                                    SizedBox(
-                                      width: 30,
-                                    ),
-                                    Container(
-                                      height: 52,
-                                      width: 15,
-                                      decoration: BoxDecoration(
-                                        color: Color(task.tag.color),
-                                        // borderRadius: BorderRadius.only(
-                                        //   topLeft: Radius.circular(8),
-                                        //   bottomLeft: Radius.circular(8)
-                                        // ),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: RadioListTile(
-                                        value: task.task.isCompleted,
-                                        groupValue: null,
-                                        onChanged: (value) =>
-                                            db.taskDao.updateTask(
-                                          task.task
-                                              .copyWith(isCompleted: value),
-                                        ),
-                                        title: Text(task.task.name),
-                                        subtitle: Text(task.tag.name),
-                                        selected: true,
-                                        secondary: Column(
-                                          children: <Widget>[
-                                            Text(
-                                              DateFormat.Hms()
-                                                  .format(task.task.dueDate),
-                                            ),
-                                            Text(
-                                              DateFormat("dd MM yyyy")
-                                                  .format(task.task.dueDate),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
                                 ),
                               );
                             },
                             separatorBuilder: (context, index) => SizedBox(
                                   height: 15,
                                 ),
-                            itemCount: 50),
+                            itemCount: tasks.length),
                       );
               },
             )
@@ -105,17 +134,16 @@ class _TaskScreenState extends State<TaskScreen> {
 
   Center _buildCenterEmptyTaskMethod() {
     return Center(
-      child: Column(
-        children: <Widget>[
-          Text(
-            "There is no scheduled task for now",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                fontSize: 19,
-                fontWeight: FontWeight.w900,
-                fontStyle: FontStyle.italic),
-          ),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.only(top: 100.0),
+        child: Text(
+          "There is no scheduled task for now",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              fontSize: 25,
+              fontWeight: FontWeight.w900,
+              fontStyle: FontStyle.italic),
+        ),
       ),
     );
   }

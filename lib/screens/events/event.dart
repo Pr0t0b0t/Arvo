@@ -36,6 +36,7 @@ class _EventScreenState extends State<EventScreen> {
 //<>
   @override
   Widget build(BuildContext context) {
+    //bool is24HoursFormat = MediaQuery.of(context).alwaysUse24HourFormat;
     final evDao = Provider.of<EventDao>(context);
     return StreamProvider.value(
       child: SafeArea(
@@ -87,6 +88,7 @@ class _EventScreenState extends State<EventScreen> {
   }
 
   SliverList _buildEventSliverList(List events, EventDao evDao) {
+    bool is24HoursFormat = MediaQuery.of(context).alwaysUse24HourFormat;
     return SliverList(
       delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
         final ev = events[index];
@@ -131,10 +133,13 @@ class _EventScreenState extends State<EventScreen> {
                               Column(
                                 children: <Widget>[
                                   SizedBox(height: 12),
-                                  Text(DateFormat.Hm()
-                                      .format(ev.event.startDate)),
+                                  (is24HoursFormat)
+                                      ? Text(DateFormat.Hm()
+                                          .format(ev.event.startDate))
+                                      : Text(DateFormat.jm()
+                                          .format(ev.event.startDate)),
                                   SizedBox(height: 5),
-                                  Text(DateFormat("dd MM yyyy")
+                                  Text(DateFormat("EEE dd MM")
                                       .format(ev.event.endDate))
                                 ],
                               ),
