@@ -1,4 +1,4 @@
-import 'package:arvo/screens/completed/setttings.dart';
+import 'package:arvo/screens/settings/setttings.dart';
 import 'package:arvo/service/database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

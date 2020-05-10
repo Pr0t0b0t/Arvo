@@ -36,6 +36,9 @@ dependencies:
   curved_navigation_bar: ^0.3.2
   bottom_navy_bar: ^5.4.0
   flutter_time_picker_spinner: ^1.0.6
+  flutter_local_notifications: ^1.4.3
+  notification_permissions: ^0.4.4
+  rxdart: ^0.24.0
 
 dev_dependencies:
   flutter_test:
@@ -65,17 +68,29 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
+  fonts:
+    - family: Elster
+      fonts:
+        - asset: fonts/ElsterSans.ttf
+
+    - family: Garlic
+      fonts:
+        - asset: fonts/Garlic-Outline-Italic.ttf
+        - asset: fonts/Garlic-Outline-Regular.ttf
+        - asset: fonts/Garlic-Sans-Italic.ttf
+        - asset: fonts/Garlic-Sans-Regular.ttf
+
+    - family: AUBREY1
+      fonts:
+        - asset: fonts/AUBREY1__.TTF
+
+    - family: IndieFlower
+      fonts:
+        - asset: fonts/IndieFlower-Regular.ttf
+
+    - family: Afterglow
+      fonts:
+        - asset: fonts/Afterglow-Regular.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

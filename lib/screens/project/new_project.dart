@@ -2,7 +2,6 @@ import 'package:arvo/widgets/text_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-
 class NewProjectDialog extends StatefulWidget {
   @override
   _NewProjectDialogState createState() => _NewProjectDialogState();
@@ -185,10 +184,10 @@ class _NewProjectDialogState extends State<NewProjectDialog> {
                         "Select a categorie..!!",
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                            //color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w900,
-                            fontStyle: FontStyle.italic),
+                          //color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w900,
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -234,7 +233,7 @@ class _NewProjectDialogState extends State<NewProjectDialog> {
                             //color: Colors.white,
                             fontSize: 16,
                             fontWeight: FontWeight.w900,
-                            fontStyle: FontStyle.italic),
+                            ),
                       ),
                     ),
                     SizedBox(
@@ -260,7 +259,7 @@ class _NewProjectDialogState extends State<NewProjectDialog> {
                                       color: Colors.black,
                                       fontSize: 20,
                                       fontWeight: FontWeight.w900,
-                                      fontStyle: FontStyle.italic),
+                                      ),
                                 ),
                                 value: e,
                               ))

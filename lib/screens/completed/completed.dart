@@ -1,4 +1,3 @@
-import 'package:arvo/screens/completed/setttings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -15,19 +14,19 @@ class _CompletedState extends State<CompletedScreen> {
         centerTitle: true,
         title: Text("All Completed Things"),
         actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              CupertinoIcons.settings_solid,
-              color: Colors.black,
-              size: 30,
-            ),
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => Settings(),
-              ),
-            ),
-          ),
+          // IconButton(
+          //   icon: Icon(
+          //     CupertinoIcons.settings_solid,
+          //     color: Colors.black,
+          //     size: 30,
+          //   ),
+          //   onPressed: () => Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //       builder: (context) => Settings(),
+          //     ),
+          //   ),
+          // ),
           // FlatButton.icon(
           //     onPressed: () {},
           //     icon: Icon(CupertinoIcons.settings_solid),

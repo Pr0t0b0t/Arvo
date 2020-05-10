@@ -1,3 +1,4 @@
+import 'package:arvo/screens/settings/setttings.dart';
 import 'package:arvo/service/database.dart';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:bubbled_navigation_bar/bubbled_navigation_bar.dart';
@@ -12,7 +13,6 @@ import 'events/new_event.dart';
 import 'project/new_project.dart';
 import 'project/project.dart';
 import 'tasks/new_task.dart';
-import 'tasks/task.dart';
 import 'time/alarm.dart';
 import 'time/new_alarm.dart';
 
@@ -20,20 +20,21 @@ class MyHomePage extends StatefulWidget {
   //static final db = AppDatabase();
   final colors = [
     Colors.red,
-    Colors.purpleAccent,
-    Colors.grey,
+    Colors.indigo,
     Colors.teal,
-    Colors.green
+    Colors.green,
+    Colors.white
   ];
 
-  final titles = ['Main', 'Events', 'Tasks', 'Time', 'Completed'];
-  final icons = [
-    CupertinoIcons.home,
-    Icons.date_range,
-    CupertinoIcons.news,
-    CupertinoIcons.clock,
-    CupertinoIcons.check_mark_circled,
-  ];
+  final titles = ['Main', 'Events','Time', 'Completed','Settings'];
+  // final icons = [
+  //   CupertinoIcons.home,
+  //   Icons.date_range,
+  //   //CupertinoIcons.news,
+  //   CupertinoIcons.clock,
+  //   CupertinoIcons.check_mark_circled,
+  //   CupertinoIcons.settings_solid,
+  // ];
 
   MyHomePage({Key key}) : super(key: key);
 
@@ -48,7 +49,6 @@ class _MyHomePageState extends State<MyHomePage> {
   MenuPositionController _menuPositionController;
   bool userPageDragging = false;
   // AppDatabase db;
-  // EventDao eventDao;
   // TaskDao taskDao;
 
   @override
@@ -98,12 +98,13 @@ class _MyHomePageState extends State<MyHomePage> {
               child: EventScreen(),
               value: db.eventDao.watchUnCompletedEvents(),
             ),
-            StreamProvider.value(
-              child: TaskScreen(),
-              value: db.taskDao.watchUnCompletedTasks(),
-            ),
+            // StreamProvider.value(
+            //   child: TaskScreen(),
+            //   value: db.taskDao.watchUnCompletedTasks(),
+            // ),
             AlarmScreen(),
             CompletedScreen(),
+            Settings()
           ],
         ),
       ),
@@ -163,7 +164,7 @@ class _MyHomePageState extends State<MyHomePage> {
             style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.w800,
-              fontStyle: FontStyle.italic,
+              //fontStyle: FontStyle.italic,
               fontSize: 16,
             ),
           ),
@@ -179,7 +180,7 @@ class _MyHomePageState extends State<MyHomePage> {
             style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.w800,
-              fontStyle: FontStyle.italic,
+              //fontStyle: FontStyle.italic,
               fontSize: 16,
             ),
           ),
@@ -188,14 +189,14 @@ class _MyHomePageState extends State<MyHomePage> {
           textAlign: TextAlign.center,
           activeColor: widget.colors.elementAt(2),
           icon: Icon(
-            CupertinoIcons.news,
+            CupertinoIcons.clock,
           ),
           title: Text(
-            "Tasks",
+            "Time",
             style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.w800,
-              fontStyle: FontStyle.italic,
+              //fontStyle: FontStyle.italic,
               fontSize: 16,
             ),
           ),
@@ -204,14 +205,14 @@ class _MyHomePageState extends State<MyHomePage> {
           textAlign: TextAlign.center,
           activeColor: widget.colors.elementAt(3),
           icon: Icon(
-            CupertinoIcons.clock,
+            CupertinoIcons.check_mark_circled,
           ),
           title: Text(
-            "Time",
+            "Completed",
             style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.w800,
-              fontStyle: FontStyle.italic,
+              //fontStyle: FontStyle.italic,
               fontSize: 16,
             ),
           ),
@@ -220,14 +221,14 @@ class _MyHomePageState extends State<MyHomePage> {
           textAlign: TextAlign.center,
           activeColor: widget.colors.elementAt(4),
           icon: Icon(
-            CupertinoIcons.check_mark_circled,
+            CupertinoIcons.settings_solid,
           ),
           title: Text(
-            "Completed",
+            "Settings",
             style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.w800,
-              fontStyle: FontStyle.italic,
+              //fontStyle: FontStyle.italic,
               fontSize: 16,
             ),
           ),
@@ -240,10 +241,10 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Padding getIcon(int index, Color color) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 3),
-      child: Icon(widget.icons[index], size: 30, color: color),
-    );
-  }
+  // Padding getIcon(int index, Color color) {
+  //   return Padding(
+  //     padding: const EdgeInsets.only(bottom: 3),
+  //     child: Icon(widget.icons[index], size: 30, color: color),
+  //   );
+  // }
 }

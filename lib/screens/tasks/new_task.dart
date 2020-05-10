@@ -62,88 +62,96 @@ class _NewTaskDialogState extends State<NewTaskDialog> {
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.00,
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 18.0, right: 15, bottom: 5),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text(
-                    "Choose your event's categorie",
-                    style: TextStyle(
-                        fontWeight: FontWeight.w900,
-                        color: Colors.black,
-                        fontSize: 15),
-                  ),
-                  Consumer<List<Tag>>(
-                    //                   child: FlatButton.icon(
-                    //   splashColor: Colors.deepOrange,
-                    //   onPressed: () {},
-                    //   icon: Icon(
-                    //     CupertinoIcons.tag_solid,
-                    //     color: Colors.red,
-                    //   ),
-                    //   label: Text("Important"),
-                    // ),
-                    builder: (BuildContext context, value, Widget child) {
-                      final tags = value ?? List();
-                      return DropdownButton<Tag>(
-                        value: _choosenTag,
-                        isExpanded: false,
-                        hint: Text("Choose a tag"),
-                        onChanged: (value) {
-                          setState(() {
-                            _choosenTag = value;
-                          });
-                        },
-                        selectedItemBuilder: (context) => tags
-                            .map<Widget>(
-                              (Tag tag) => Row(
-                                children: <Widget>[
-                                  Icon(
-                                    CupertinoIcons.tag_solid,
-                                    color: Color(tag.color),
-                                  ),
-                                  Text(tag.name)
-                                ],
-                              ),
-                            )
-                            .toList(),
-                        items: tags
-                            .map(
-                              (Tag tag) => DropdownMenuItem<Tag>(
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
+            Card(
+              child: Padding(
+                padding:
+                    const EdgeInsets.only(left: 18.0, right: 15, bottom: 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(
+                      "Task's categorie",
+                      style: TextStyle(
+                          fontWeight: FontWeight.w900,
+                          color: Colors.black,
+                          fontSize: 15),
+                    ),
+                    Consumer<List<Tag>>(
+                      //                   child: FlatButton.icon(
+                      //   splashColor: Colors.deepOrange,
+                      //   onPressed: () {},
+                      //   icon: Icon(
+                      //     CupertinoIcons.tag_solid,
+                      //     color: Colors.red,
+                      //   ),
+                      //   label: Text("Important"),
+                      // ),
+                      builder: (BuildContext context, value, Widget child) {
+                        final tags = value ?? List();
+                        return DropdownButton<Tag>(
+                          value: _choosenTag,
+                          isExpanded: false,
+                          hint: Text("Choose a tag"),
+                          onChanged: (value) {
+                            setState(() {
+                              _choosenTag = value;
+                            });
+                          },
+                          selectedItemBuilder: (context) => tags
+                              .map<Widget>(
+                                (Tag tag) => Row(
                                   children: <Widget>[
                                     Icon(
                                       CupertinoIcons.tag_solid,
-                                      color: Color(tag.color), //Colors.black87,
-                                      size: 35,
+                                      color: Color(tag.color),
                                     ),
-                                    SizedBox(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.025,
-                                    ),
-                                    Text(
-                                      tag.name,
-                                      style: TextStyle(
-                                          fontStyle: FontStyle.italic,
-                                          color: Colors.black87,
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w900),
-                                    )
+                                    Text(tag.name)
                                   ],
                                 ),
-                                value: tag,
-                              ),
-                            )
-                            .toList(),
-                      );
-                    },
-                  ),
-                ],
+                              )
+                              .toList(),
+                          items: tags
+                              .map(
+                                (Tag tag) => DropdownMenuItem<Tag>(
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: <Widget>[
+                                      Icon(
+                                        CupertinoIcons.tag_solid,
+                                        color:
+                                            Color(tag.color), //Colors.black87,
+                                        size: 35,
+                                      ),
+                                      SizedBox(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.025,
+                                      ),
+                                      Text(
+                                        tag.name,
+                                        style: TextStyle(
+                                            //fontStyle: FontStyle.italic,
+                                            color: Colors.black87,
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w900),
+                                      )
+                                    ],
+                                  ),
+                                  value: tag,
+                                ),
+                              )
+                              .toList(),
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.018,
             ),
             Text(
               "Pick your task's date & time",
@@ -247,8 +255,8 @@ class _NewTaskDialogState extends State<NewTaskDialog> {
           doneStyle: TextStyle(
               color: Colors.white,
               fontSize: 16,
-              fontWeight: FontWeight.w800,
-              fontStyle: FontStyle.italic),
+              fontWeight: FontWeight.w800),
+              //fontStyle: FontStyle.italic),
         ), onConfirm: (dateTime) {
       print("On confirm date time is $dateTime");
       setState(() {

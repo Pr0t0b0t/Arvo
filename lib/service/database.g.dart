@@ -1748,6 +1748,19 @@ mixin _$AlarmDaoMixin on DatabaseAccessor<AppDatabase> {
 mixin _$EventDaoMixin on DatabaseAccessor<AppDatabase> {
   $EventsTable get events => db.events;
   $TagsTable get tags => db.tags;
+  Selectable<int> _valueOfElementsQuery() {
+    return customSelectQuery('SELECT COUNT (*) FROM events',
+        variables: [],
+        readsFrom: {events}).map((QueryRow row) => row.readInt('COUNT (*)'));
+  }
+
+  Future<List<int>> _valueOfElements() {
+    return _valueOfElementsQuery().get();
+  }
+
+  Stream<List<int>> _watchValueOfElements() {
+    return _valueOfElementsQuery().watch();
+  }
 }
 mixin _$ProjectDaoMixin on DatabaseAccessor<AppDatabase> {
   $ProjectsTable get projects => db.projects;

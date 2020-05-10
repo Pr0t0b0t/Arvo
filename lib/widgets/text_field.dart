@@ -33,13 +33,14 @@ class ArvoTextFormField extends StatelessWidget {
           style: TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.w900,
-            fontStyle: FontStyle.italic,
+            //fontStyle: FontStyle.italic,
             
             fontSize: 18,
           ),
           controller: controller,
           validator: (value) {
             if (value.isEmpty) {
+              Text("This text field can't be empty!!");
               return "This text field can't be empty..!!";
             } else
               return null;

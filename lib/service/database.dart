@@ -128,25 +128,43 @@ class AppDatabase extends _$AppDatabase with ChangeNotifier {
         }
       }, beforeOpen: (detail) async {
         await customStatement('PRAGMA foreign_keys = ON');
-        await into(tags).insert(
-          TagsCompanion(
-            name: const Value("Important"),
-            color: Value(4294198070),
-          ),
-        );
-        await into(tags).insert(
+        // await into(tags).insert(
+        //   TagsCompanion(
+        //     name: const Value("Standard"),
+        //     color: Value(4283215696),
+        //   ),
+        // );
+        // await into(tags).insert(
+        //   TagsCompanion(
+        //     name: const Value("Coding"),
+        //     color: Value(4286141768),
+        //   ),
+        // );
+        // await into(tags).insert(
+        //   TagsCompanion(
+        //     name: const Value("Important"),
+        //     color: Value(4294198070),
+        //   ),
+        // );
+      }, onCreate: (Migrator m) {
+        into(tags).insert(
           TagsCompanion(
             name: const Value("Standard"),
             color: Value(4283215696),
           ),
         );
-        await into(tags).insert(
+        into(tags).insert(
           TagsCompanion(
             name: const Value("Coding"),
             color: Value(4286141768),
           ),
         );
-      }, onCreate: (Migrator m) {
+        into(tags).insert(
+          TagsCompanion(
+            name: const Value("Important"),
+            color: Value(4294198070),
+          ),
+        );
         return m.createAll();
       });
 
@@ -157,14 +175,16 @@ class AppDatabase extends _$AppDatabase with ChangeNotifier {
 class AlarmDao extends DatabaseAccessor<AppDatabase> with _$AlarmDaoMixin {
   AlarmDao(AppDatabase db) : super(db);
 
-  Future insertAlarm(Insertable<Alarm> alarm) =>
-      into(alarms).insert(alarm);
+  Future insertAlarm(Insertable<Alarm> alarm) => into(alarms).insert(alarm);
   Future updateAlarm(Insertable<Alarm> alarm) => update(alarms).replace(alarm);
   Stream<List<Alarm>> watchAlarm() => select(alarms).watch();
 }
 
 //Event Data Accesssor Objects
-@UseDao(tables: [Events, Tags])
+@UseDao(
+  tables: [Events, Tags],
+  queries: {'_valueOfElements': 'SELECT COUNT (*) FROM events'},
+)
 class EventDao extends DatabaseAccessor<AppDatabase> with _$EventDaoMixin {
   final AppDatabase appDatabase;
 
@@ -174,11 +194,36 @@ class EventDao extends DatabaseAccessor<AppDatabase> with _$EventDaoMixin {
     return (select(events)
           ..orderBy(
             [
-              (t) => OrderingTerm(
-                  expression: t.startDate, mode: OrderingMode.desc),
+              (t) => OrderingTerm.asc(t.startDate.day),
+              (t) => OrderingTerm(expression: t.startDate.hour),
               (t) => OrderingTerm(expression: t.evName),
             ],
           ))
+        .join(
+          [
+            leftOuterJoin(tags, tags.id.equalsExp(events.tag)),
+          ],
+        )
+        .watch()
+        .map((rows) => rows.map((row) {
+              return EventWithTag(
+                event: row.readTable(events),
+                tag: row.readTable(tags),
+              );
+            }).toList());
+  }
+
+  Stream<List<EventWithTag>> specificDayEvents(DateTime selectedDate) {
+    return (select(events)
+          ..orderBy(
+            [
+              (t) => OrderingTerm(
+                  expression: t.startDate.hour, mode: OrderingMode.desc),
+              (t) => OrderingTerm(expression: t.evName),
+              (t) => OrderingTerm.asc(t.startDate.day)
+            ],
+          )
+          ..where((t) => t.startDate.day.equals(selectedDate.day)))
         .join(
           [
             leftOuterJoin(tags, tags.id.equalsExp(events.tag)),
@@ -212,7 +257,6 @@ class EventDao extends DatabaseAccessor<AppDatabase> with _$EventDaoMixin {
   Future updateEvent(Insertable<Event> event) => update(events).replace(event);
   Future deleteEvent(Insertable<Event> event) => delete(events).delete(event);
 }
-
 
 @UseDao(tables: [Projects, SubTasks, Tags])
 class ProjectDao extends DatabaseAccessor<AppDatabase> with _$ProjectDaoMixin {
@@ -311,8 +355,3 @@ class TaskDao extends DatabaseAccessor<AppDatabase> with _$TaskDaoMixin {
   Future updateTask(Insertable<Task> task) => update(tasks).replace(task);
   Future deleteTask(Insertable<Task> task) => delete(tasks).delete(task);
 }
-
-
-
-
-

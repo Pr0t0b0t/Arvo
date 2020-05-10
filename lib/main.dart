@@ -1,10 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
+import 'package:rxdart/rxdart.dart';
 
 import 'screens/home.dart';
 import 'service/database.dart';
 
 AppDatabase _database;
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+
+final BehaviorSubject<ReceivedNotification> didReceiveLocalNotificationSubject =
+    BehaviorSubject<ReceivedNotification>();
+
+NotificationAppLaunchDetails notificationAppLaunchDetails;
+
+class ReceivedNotification {
+  final int id;
+  final String title;
+  final String body;
+  final String payload;
+
+  ReceivedNotification(
+      {@required this.id,
+      @required this.title,
+      @required this.body,
+      @required this.payload});
+}
+
 void main() {
   _database = AppDatabase();
   runApp(
@@ -34,7 +57,8 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: true,
         title: 'Flutter Demo',
         theme: ThemeData(
-          primarySwatch: Colors.blue,
+          fontFamily: 'Afterglow',
+          primarySwatch: Colors.lightBlue,
         ),
         home: MyHomePage(),
       ),

@@ -110,6 +110,9 @@ class _AlarmScreenState extends State<AlarmScreen> {
         child: Center(
           child: Column(
             children: <Widget>[
+              SizedBox(height: 15,),
+              Icon(Icons.access_alarms,size: 150,color: Colors.white,),
+              SizedBox(height: 15,),
               Text(
                 "There is no Alarm scheduled for now",
                 style: TextStyle(

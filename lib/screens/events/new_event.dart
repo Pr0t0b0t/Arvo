@@ -30,12 +30,14 @@ class _NewEventDialogState extends State<NewEventDialog> {
     _formKey = GlobalKey<FormState>();
     startTime = DateTime.now();
     endTime = DateTime.now();
+    _choosedTag = Tag(id: 1, name: "Standard", color: 4283215696);
   }
 
   @override
   Widget build(BuildContext context) {
-    //final evDao = Provider.of<EventDao>(context);
-    //_choosedTag = _data[1];
+   setState(() {
+     endTime = startTime;
+   });
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -103,27 +105,6 @@ class _NewEventDialogState extends State<NewEventDialog> {
                                 color: Colors.black,
                                 fontSize: 15),
                           ),
-                          // FlatButton.icon(
-                          //   onPressed: () => showDialog(
-                          //     barrierDismissible: false,
-                          //     context: context,
-                          //     builder: (context) => Dialog(
-                          //       child: StreamProvider.value(
-                          //         child: TagsList(),
-                          //         value: db.tagDao.watchTags(),
-                          //       ),
-                          //       shape: RoundedRectangleBorder(
-                          //         borderRadius:
-                          //             BorderRadius.all(Radius.circular(20)),
-                          //       ),
-                          //     ),
-                          //   ),
-                          //   icon: Icon(
-                          //     CupertinoIcons.tag_solid,
-                          //     color: pickedTagColor,
-                          //   ),
-                          //   label: Text("Important"),
-                          // ),
                           /**<DropdownMenuItem<Tag>> */
                           DropdownButton<Tag>(
                             value: _choosedTag,
@@ -134,6 +115,9 @@ class _NewEventDialogState extends State<NewEventDialog> {
                                 _choosedTag = value;
                               });
                             },
+                            style: TextStyle(
+                                color: Colors.black87,
+                                fontWeight: FontWeight.w900),
                             selectedItemBuilder: (context) => tags
                                 .map<Widget>(
                                   (Tag tag) => Row(
@@ -141,6 +125,11 @@ class _NewEventDialogState extends State<NewEventDialog> {
                                       Icon(
                                         CupertinoIcons.tag_solid,
                                         color: Color(tag.color),
+                                      ),
+                                      SizedBox(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.025,
                                       ),
                                       Text(tag.name)
                                     ],
@@ -167,14 +156,7 @@ class _NewEventDialogState extends State<NewEventDialog> {
                                                   .width *
                                               0.025,
                                         ),
-                                        Text(
-                                          tag.name,
-                                          style: TextStyle(
-                                              fontStyle: FontStyle.italic,
-                                              color: Colors.black87,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.w900),
-                                        )
+                                        Text(tag.name)
                                       ],
                                     ),
                                     value: tag,
@@ -362,9 +344,9 @@ class _NewEventDialogState extends State<NewEventDialog> {
 
   void _buildEndDateTimePicker(BuildContext context) {
     DatePicker.showDateTimePicker(context,
-        currentTime: DateTime.now(),
+        currentTime: startTime,
         showTitleActions: true,
-        minTime: DateTime(DateTime.now().year, DateTime.now().month, 1),
+        minTime: DateTime(startTime.year, startTime.month, startTime.day,startTime.hour,startTime.minute),
         maxTime: DateTime(DateTime.now().year + 5, 12, 31),
         theme: DatePickerTheme(
           backgroundColor: Colors.blue,

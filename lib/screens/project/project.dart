@@ -28,12 +28,12 @@ class _ProjectScreenState extends State<ProjectScreen> {
               height: 10,
             ),
             Text(
-              "Avalaible Projects",
+              "Created Projects",
               style: TextStyle(
                   color: Colors.white,
                   fontSize: 25,
-                  fontWeight: FontWeight.w900,
-                  fontStyle: FontStyle.italic),
+                  fontWeight: FontWeight.w900,)
+                  //fontStyle: FontStyle.italic),
             ),
             SizedBox(
               height: 10,
@@ -152,8 +152,8 @@ class _ProjectScreenState extends State<ProjectScreen> {
                                           "Project Name",
                                           style: TextStyle(
                                               fontSize: 15,
-                                              fontWeight: FontWeight.w900,
-                                              fontStyle: FontStyle.italic),
+                                              fontWeight: FontWeight.w900),
+                                              //fontStyle: FontStyle.italic),
                                         ),
                                       ],
                                     ),
@@ -168,8 +168,8 @@ class _ProjectScreenState extends State<ProjectScreen> {
                                           "Project Subname",
                                           style: TextStyle(
                                               fontSize: 15,
-                                              fontWeight: FontWeight.w900,
-                                              fontStyle: FontStyle.italic),
+                                              fontWeight: FontWeight.w900,)
+                                              //fontStyle: FontStyle.italic),
                                         ),
                                       ],
                                     ),
@@ -184,8 +184,8 @@ class _ProjectScreenState extends State<ProjectScreen> {
                                           "Project Date & Time",
                                           style: TextStyle(
                                               fontSize: 15,
-                                              fontWeight: FontWeight.w900,
-                                              fontStyle: FontStyle.italic),
+                                              fontWeight: FontWeight.w900,)
+                                              //fontStyle: FontStyle.italic),
                                         ),
                                       ],
                                     ),
@@ -194,8 +194,8 @@ class _ProjectScreenState extends State<ProjectScreen> {
                                       "Project Completed",
                                       style: TextStyle(
                                           fontSize: 15,
-                                          fontWeight: FontWeight.w900,
-                                          fontStyle: FontStyle.italic),
+                                          fontWeight: FontWeight.w900),
+                                          //fontStyle: FontStyle.italic),
                                     ),
                                     //SizedBox(height: 15)
                                   ],
@@ -212,12 +212,12 @@ class _ProjectScreenState extends State<ProjectScreen> {
             ),
             SizedBox(height: 15),
             Text(
-              "Project Avaliable tasks",
+              "Project {project name} tasks",
               style: TextStyle(
                   color: Colors.white,
                   fontSize: 25,
-                  fontWeight: FontWeight.w900,
-                  fontStyle: FontStyle.italic),
+                  fontWeight: FontWeight.w900),
+                  //fontStyle: FontStyle.italic),
             ),
             SizedBox(height: 15),
             Expanded(
@@ -295,8 +295,8 @@ class _ProjectScreenState extends State<ProjectScreen> {
                             textAlign: TextAlign.center,
                             style: TextStyle(
                                 fontSize: 19,
-                                fontWeight: FontWeight.w900,
-                                fontStyle: FontStyle.italic),
+                                ),
+                                //fontStyle: FontStyle.italic),
                           ),
                           SizedBox(height: 12),
                           Text(
@@ -304,8 +304,8 @@ class _ProjectScreenState extends State<ProjectScreen> {
                             textAlign: TextAlign.center,
                             style: TextStyle(
                                 fontSize: 19,
-                                fontWeight: FontWeight.w900,
-                                fontStyle: FontStyle.italic),
+                                ),
+                                //fontStyle: FontStyle.italic),
                           ),
                           SizedBox(height: 12),
                           Text(
@@ -313,17 +313,17 @@ class _ProjectScreenState extends State<ProjectScreen> {
                             textAlign: TextAlign.center,
                             style: TextStyle(
                                 fontSize: 19,
-                                fontWeight: FontWeight.w900,
-                                fontStyle: FontStyle.italic),
+                                ),
+                                //fontStyle: FontStyle.italic),
                           ),
                           SizedBox(height: 12),
                           Text(
                             "4-Slide to left on a task tile to delete..!!",
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                                fontSize: 19,
-                                fontWeight: FontWeight.w900,
-                                fontStyle: FontStyle.italic),
+                                fontSize: 19,)
+                                //fontWeight: FontWeight.w900),
+                                //fontStyle: FontStyle.italic),
                           ),
                           SizedBox(height: 15),
                           Text(
@@ -332,8 +332,8 @@ class _ProjectScreenState extends State<ProjectScreen> {
                             style: TextStyle(
                                 fontSize: 20,
                                 color: Colors.deepPurple,
-                                fontWeight: FontWeight.w900,
-                                fontStyle: FontStyle.italic),
+                                fontWeight: FontWeight.w900,)
+                                //fontStyle: FontStyle.italic),
                           ),
                         ],
                       ),
